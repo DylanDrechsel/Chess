@@ -19,6 +19,7 @@ class ChessBoard {
 
     // Renders the chess board in the HTML element with id 'chessboard'
     renderBoard = () => {
+        console.log('hit')
         const boardElement = document.getElementById('chessboard')
 
         // Clear previous board content to avoid duplicate renders
@@ -89,7 +90,7 @@ class ChessBoard {
         this.board[startRow][startCol] = ''
 
         // Reset the selectedPiece to null, indicating no piece is currently selected
-        this.selectPiece = null
+        this.selectedPiece = null
         
         // Re-render the chessboard to update the position of the pieces
         this.renderBoard()
