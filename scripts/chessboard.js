@@ -1,15 +1,17 @@
+import { Pawn } from './pieces.js'
+
 // Lowercase --> Black Pieces
 // Uppercase --> White Pieces
 class ChessBoard {
     constructor() {
         this.board = [
             ['r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'],
-            ['p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'],
+            [new Pawn('black'), new Pawn('black'), new Pawn('black'), new Pawn('black'), new Pawn('black'), new Pawn('black'), new Pawn('black'), new Pawn('black')],
             ['', '', '', '', '', '', '', ''],
             ['', '', '', '', '', '', '', ''],
             ['', '', '', '', '', '', '', ''],
             ['', '', '', '', '', '', '', ''],
-            ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
+            [new Pawn('white'), new Pawn('white'), new Pawn('white'), new Pawn('white'), new Pawn('white'), new Pawn('white'), new Pawn('white'), new Pawn('white')],
             ['R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R']
         ]
         this.selectedPiece = null
@@ -34,6 +36,9 @@ class ChessBoard {
 
                 // setting square color based on remainder 
                 square.className = `square ${((row + col) % 2 ===0) ? 'white' : 'black'}`
+
+                // Set Dataset (row & col) to hold the position of the square
+                // Example: Top Left Square --> Row: 0 / Col: 0 
                 square.dataset.row = row
                 square.dataset.col = col
 
@@ -72,8 +77,6 @@ class ChessBoard {
     selectPiece = (row, col) => {
         // Store the selected piece's position in an object
         this.selectedPiece = { row, col }
-
-        console.log(`Selected piece at ${row}, ${col}`);
     }
 
     // Function to move a piece from its selected position to a new position
@@ -94,25 +97,21 @@ class ChessBoard {
         // Re-render the chessboard to update the position of the pieces
         this.renderBoard()
 
-        console.log(`Moved piece to ${row} ${col}`)
+        // Reset the Event Listeners
+        this.addEventListeners()
     }
 
+    // Get the symbol representing a piece
     getPieceSymbol = (piece) => {
         const symbols = {
-            'p': '♟',
-            'r': '♜',
-            'n': '♞',
-            'b': '♝',
-            'q': '♛',
-            'k': '♚',
-            'P': '♙',
-            'R': '♖',
-            'N': '♘',
-            'B': '♗',
-            'Q': '♕',
-            'K': '♔'
-        }
-        return symbols[piece]
+            'pawn': piece.color === 'white' ? '♙' : '♟',
+            'rook': piece.color === 'white' ? '♖' : '♜',
+            'knight': piece.color === 'white' ? '♘' : '♞',
+            'bishop': piece.color === 'white' ? '♗' : '♝',
+            'queen': piece.color === 'white' ? '♕' : '♛',
+            'king': piece.color === 'white' ? '♔' : '♚'
+        };
+        return symbols[piece.type];
     }
 }
 
