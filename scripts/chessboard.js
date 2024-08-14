@@ -19,7 +19,6 @@ class ChessBoard {
 
     // Renders the chess board in the HTML element with id 'chessboard'
     renderBoard = () => {
-        console.log('hit')
         const boardElement = document.getElementById('chessboard')
 
         // Clear previous board content to avoid duplicate renders
