@@ -12,6 +12,9 @@ class ChessBoard {
             ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
             ['R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R']
         ]
+        this.selectedPiece = null
+        this.renderBoard()
+        this.addEventListeners()
     }
 
     // Renders the chess board in the HTML element with id 'chessboard'
@@ -114,5 +117,3 @@ class ChessBoard {
 }
 
 const chessBoard = new ChessBoard()
-chessBoard.renderBoard()
-chessBoard.addEventListeners()
