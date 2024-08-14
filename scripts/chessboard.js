@@ -89,7 +89,7 @@ class ChessBoard {
         this.board[startRow][startCol] = ''
 
         // Reset the selectedPiece to null, indicating no piece is currently selected
-        this.selectPiece = null
+        this.selectedPiece = null
         
         // Re-render the chessboard to update the position of the pieces
         this.renderBoard()
