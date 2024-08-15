@@ -212,12 +212,65 @@ class Bishop extends Piece {
     }
 }
 
+// Queen piece with movement logic
+// Valid Queen Moves: [0, x] || [0, -x] || [x, 0] || [-x, 0]
+//                    [x, x] || [x, -x] || [-x, x] || [-x, -x]
 class Queen extends Piece {
     constructor(color) {
         super(color, 'queen')
     }
+
+    isValidMove = (startPos, endPos, board) => {
+        const startRow = startPos[0]
+        const startCol = startPos[1]
+        const endRow = endPos[0]
+        const endCol = endPos[1]
+
+        // Calculate the absolute differences in rows and columns
+        const rowDiff = Math.abs(startRow - endRow)
+        const colDiff = Math.abs(startCol - endCol)
+
+        // A Queen is able to move both like a Rook and a Bishop
+        if (rowDiff === colDiff || startRow === endRow || startCol === endCol) {
+            // Determine the step increments for row and column directions
+            const stepRow = rowDiff === colDiff ? (endRow > startRow ? 1 : -1) : (startRow === endRow ? 0 : (endRow > startRow ? 1 : -1))
+            const stepCol = rowDiff === colDiff ? (endCol > startCol ? 1 : -1) : (startCol === endCol ? 0 : (endCol > startCol ? 1 : -1))
+
+            // Check every square between the start and end positions for a piece
+            let currentRow = startRow + stepRow
+            let currentCol = startCol + stepCol
+
+            // Loop through each square between the starting and ending positions to check for other pieces
+            while (currentRow !== endRow || currentCol !== endCol) {
+                // Checks if the current square is occupied
+                if (board[currentRow][currentCol] !== '') {
+                    // If there is a piece blocking the path, the move is invalid
+                    return false
+                }
+                currentRow += stepRow
+                currentCol += stepCol
+            }
+
+            // Checks the destination square for the same color piece
+            const targetPiece = board[endRow][endCol]
+
+            // Cant jump own piece
+            if (targetPiece && targetPiece.color === this.color) {
+                return false
+            }
+
+            // If all checks pass the move is valid
+            return true
+        }
+
+        // If the move doesnt match the queens pattern it is invalid
+        return false
+    }
 }
 
+// King piece with movement logic
+// Valid King Moves: [1, 0] || [-1, 0] || [0, 1] || [0, -1]
+//                   [1, 1] || [1, -1] || [-1, 1] || [-1, -1]
 class King extends Piece {
     constructor(color) {
         super(color, 'king')
