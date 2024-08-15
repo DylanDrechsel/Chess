@@ -17,7 +17,7 @@ class Piece {
 // Pawn piece with movement logic
 class Pawn extends Piece {
     constructor(color) {
-        super(color, 'pawn');
+        super(color, 'pawn')
     }
 
     isValidMove = (startPos, endPos, board) => {
@@ -74,7 +74,7 @@ class Pawn extends Piece {
 // Rook piece with movement logic
 class Rook extends Piece {
     constructor(color) {
-        super(color, 'rook');
+        super(color, 'rook')
     }
 
     // Check if a rook move is valid
@@ -101,8 +101,8 @@ class Rook extends Piece {
         const stepCol = startCol === endCol ? 0 : (endCol > startCol ? 1 : -1)
 
         // Check each square between the start and end positions for other pieces
-        let currentRow = startRow + stepRow; // Initialize current row
-        let currentCol = startCol + stepCol; // Initialize current column
+        let currentRow = startRow + stepRow // Initialize current row
+        let currentCol = startCol + stepCol // Initialize current column
 
         // Loop through each square between the starting and ending positions to check for other pieces
         while (currentRow !== endRow || currentCol !== endCol) {
@@ -136,10 +136,10 @@ class Knight extends Piece {
     }
 
     isValidMove = (startPos, endPos, board) => {
-        const startRow = startPos[0];
-        const startCol = startPos[1];
-        const endRow = endPos[0];
-        const endCol = endPos[1];
+        const startRow = startPos[0]
+        const startCol = startPos[1]
+        const endRow = endPos[0]
+        const endCol = endPos[1]
 
         // Turns all valid moves into [1, 2] || [2, 1]
         const rowDiff = Math.abs(startRow - endRow)
@@ -147,7 +147,7 @@ class Knight extends Piece {
 
         if ((rowDiff === 2 && colDiff === 1) || (rowDiff === 1 && colDiff === 2)) {
             // Check if the square is empty of occupied by an opponent
-            const targetPiece = board[endRow][endCol];
+            const targetPiece = board[endRow][endCol]
 
             if (!targetPiece || targetPiece !== this.color) {
                 return true
@@ -159,9 +159,56 @@ class Knight extends Piece {
     }
 }
 
+// Bishop piece with movement logic
+// Valid Bishop Moves: [1, 1] || [1, -1] || [-1, 1] || [-1, -1]
 class Bishop extends Piece {
     constructor(color) {
         super(color, 'bishop')
+    }
+
+    isValidMove = (startPos, endPos, board) => {
+        const startRow = startPos[0]
+        const startCol = startPos[1]
+        const endRow = endPos[0]
+        const endCol = endPos[1]
+
+        // A bishop moves diagonally, which requires equal row and column differnces
+        if (Math.abs(startRow - endRow) !== Math.abs(startCol - endCol)) {
+            // If row and column differences aren't equal, it's not a diagonal move
+            // [x, x] != [x, x]
+            return false
+        }
+
+        // Determine the direction of movement (row and column step increments)
+        // The `stepRow` variable determines how many steps to take vertically (up or down)
+        // The `stepCol` variable determines how many steps to take horizontally (left or right)
+        const stepRow = endRow > startRow ? 1 : -1  // +1 for downward, -1 for upward
+        const stepCol = endCol > startCol ? 1 : -1  // +1 for right, -1 for left
+
+        // Check each square between the start and end positions for other pieces
+        let currentRow = startRow + stepRow
+        let currentCol = startCol + stepCol
+
+        // Loop through each square between the starting and ending positions to check for other pieces
+        while (currentRow !== endRow || currentCol !== endCol) {
+            // Checks if the current square is occupied
+            if (board[currentRow][currentCol] !== '') {
+                // If there is a piece blocking the path, the move is invalid
+                return false
+            }
+            currentRow += stepRow
+            currentCol += stepCol
+        }
+
+        // Checks the destination square for the same color piece
+        const targetPiece = board[endRow][endCol]
+
+        // Cant jump own piece
+        if (targetPiece && targetPiece.color === this.color) {
+            return false
+        }
+
+        return true
     }
 }
 

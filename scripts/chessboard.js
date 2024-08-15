@@ -69,20 +69,20 @@ class ChessBoard {
 
         // Check if there's a currently selected piece
         if (this.selectedPiece) {
-            const { row: startRow, col: startCol } = this.selectedPiece;
-            const selectedPiece = this.board[startRow][startCol];
+            const { row: startRow, col: startCol } = this.selectedPiece
+            const selectedPiece = this.board[startRow][startCol]
 
             // Check if the move is valid for the selected piece
             if (selectedPiece.isValidMove([startRow, startCol], [row, col], this.board)) {
                 // Move the selected piece to the new position
-                this.movePiece(row, col);
-                return; // Exit early if a valid move is performed
+                this.movePiece(row, col)
+                return // Exit early if a valid move is performed
             }
         }
 
         // Select a piece if it's the current player's turn and no piece is currently selected
         if (piece && piece.color === this.currentTurn) {
-            this.selectPiece(row, col);
+            this.selectPiece(row, col)
         }
     }
 
@@ -150,7 +150,7 @@ class ChessBoard {
             'bishop': piece.color === 'white' ? '♗' : '♝',
             'queen': piece.color === 'white' ? '♕' : '♛',
             'king': piece.color === 'white' ? '♔' : '♚'
-        };
+        }
         return symbols[piece.type]
     }
 }
