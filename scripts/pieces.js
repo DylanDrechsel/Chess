@@ -127,4 +127,54 @@ class Rook extends Piece {
     }
 }
 
-export { Piece, Pawn, Rook }
+// Knight piece with movement logic
+// Valid Knight Moves: [2, 1] || [2, -1] || [-2, 1] || [-2, -1]
+//                     [1, 2] || [1, -2] || [-1, 2] || [-1, -2]
+class Knight extends Piece {
+    constructor(color) {
+        super(color, 'knight')
+    }
+
+    isValidMove = (startPos, endPos, board) => {
+        const startRow = startPos[0];
+        const startCol = startPos[1];
+        const endRow = endPos[0];
+        const endCol = endPos[1];
+
+        // Turns all valid moves into [1, 2] || [2, 1]
+        const rowDiff = Math.abs(startRow - endRow)
+        const colDiff = Math.abs(startCol - endCol)
+
+        if ((rowDiff === 2 && colDiff === 1) || (rowDiff === 1 && colDiff === 2)) {
+            // Check if the square is empty of occupied by an opponent
+            const targetPiece = board[endRow][endCol];
+
+            if (!targetPiece || targetPiece !== this.color) {
+                return true
+            }
+        }
+
+        // If the move doesnt match the knights pattern it is invalid
+        return false
+    }
+}
+
+class Bishop extends Piece {
+    constructor(color) {
+        super(color, 'bishop')
+    }
+}
+
+class Queen extends Piece {
+    constructor(color) {
+        super(color, 'queen')
+    }
+}
+
+class King extends Piece {
+    constructor(color) {
+        super(color, 'king')
+    }
+}
+
+export { Piece, Pawn, Rook, Knight, Bishop, Queen, King }
