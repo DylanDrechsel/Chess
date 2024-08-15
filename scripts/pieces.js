@@ -55,9 +55,13 @@ class Pawn extends Piece {
         // Checks for diagonal capture
         // Checks the positon ([1, 1] || [1, -1]) || ([-1, -1] || [-1, 1])
         if ((endCol - startCol === 1 || -1) && startRow + direction === endRow) {
+            // Grabs to target piece
             const targetPiece = board[endRow][endCol]
 
+            // Checks if ther eis a piece there that belongs to the opposing color
             if (targetPiece && targetPiece.color !== this.color) {
+                // White pawn at [4, 4] captures a black piece at [3, 5]
+                // White pawn moves from [4, 4] to [3, 5] (one square diagonal)
                 return true
             }
         }
