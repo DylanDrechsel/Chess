@@ -1,18 +1,18 @@
-import { Pawn } from './pieces.js'
+import { Pawn, Rook } from './pieces.js'
 
 // Lowercase --> Black Pieces
 // Uppercase --> White Pieces
 class ChessBoard {
     constructor() {
         this.board = [
-            ['r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'],
+            [new Rook('black'), 'n', 'b', 'q', 'k', 'b', 'n', new Rook('block')],
             [new Pawn('black'), new Pawn('black'), new Pawn('black'), new Pawn('black'), new Pawn('black'), new Pawn('black'), new Pawn('black'), new Pawn('black')],
             ['', '', '', '', '', '', '', ''],
             ['', '', '', '', '', '', '', ''],
             ['', '', '', '', '', '', '', ''],
             ['', '', '', '', '', '', '', ''],
             [new Pawn('white'), new Pawn('white'), new Pawn('white'), new Pawn('white'), new Pawn('white'), new Pawn('white'), new Pawn('white'), new Pawn('white')],
-            ['R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R']
+            [new Rook('white'), 'N', 'B', 'Q', 'K', 'B', 'N', new Rook('white')]
         ]
         this.selectedPiece = null
         this.currentTurn = 'white';

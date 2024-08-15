@@ -71,5 +71,10 @@ class Pawn extends Piece {
     }
 }
 
+class Rook extends Piece {
+    constructor(color) {
+        super(color, 'rook');
+    }
+}
 
-export { Piece, Pawn }
+export { Piece, Pawn, Rook }
