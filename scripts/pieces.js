@@ -50,7 +50,20 @@ class Pawn extends Piece {
                     return true
                 }
             }
-        } 
+        }
+        
+        // Checks for diagonal capture
+        // Checks the positon ([1, 1] || [1, -1]) || ([-1, -1] || [-1, 1])
+        if ((endCol - startCol === 1 || -1) && startRow + direction === endRow) {
+            const targetPiece = board[endRow][endCol]
+
+            if (targetPiece && targetPiece.color !== this.color) {
+                return true
+            }
+        }
+
+        // If none of the moves are valid return false
+        return false
     }
 }
 
