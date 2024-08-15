@@ -1,21 +1,21 @@
-import { Pawn } from './pieces.js'
+import { Pawn, Rook } from './pieces.js'
 
 // Lowercase --> Black Pieces
 // Uppercase --> White Pieces
 class ChessBoard {
     constructor() {
         this.board = [
-            ['r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'],
+            [new Rook('black'), 'n', 'b', 'q', 'k', 'b', 'n', new Rook('block')],
             [new Pawn('black'), new Pawn('black'), new Pawn('black'), new Pawn('black'), new Pawn('black'), new Pawn('black'), new Pawn('black'), new Pawn('black')],
             ['', '', '', '', '', '', '', ''],
             ['', '', '', '', '', '', '', ''],
             ['', '', '', '', '', '', '', ''],
             ['', '', '', '', '', '', '', ''],
             [new Pawn('white'), new Pawn('white'), new Pawn('white'), new Pawn('white'), new Pawn('white'), new Pawn('white'), new Pawn('white'), new Pawn('white')],
-            ['R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R']
+            [new Rook('white'), 'N', 'B', 'Q', 'K', 'B', 'N', new Rook('white')]
         ]
         this.selectedPiece = null
-        this.currentTurn = 'white';
+        this.currentTurn = 'white'
         this.renderBoard()
         this.addEventListeners()
     }
@@ -47,7 +47,7 @@ class ChessBoard {
                     square.innerHTML = this.getPieceSymbol(piece)
                 }
                 
-                boardElement.appendChild(square);
+                boardElement.appendChild(square)
             }
         }
     }
@@ -69,9 +69,23 @@ class ChessBoard {
         // Get the piece that is located at the clicked square
         const piece = this.board[row][col]
 
-        // Check if the piece is currently selected
-        this.selectedPiece ? this.movePiece(row, col) : null
-        piece && piece.color === this.currentTurn ? this.selectPiece(row,col) : null
+        // Check if there's a currently selected piece
+        if (this.selectedPiece) {
+            const { row: startRow, col: startCol } = this.selectedPiece;
+            const selectedPiece = this.board[startRow][startCol];
+
+            // Check if the move is valid for the selected piece
+            if (selectedPiece.isValidMove([startRow, startCol], [row, col], this.board)) {
+                // Move the selected piece to the new position
+                this.movePiece(row, col);
+                return; // Exit early if a valid move is performed
+            }
+        }
+
+        // Select a piece if it's the current player's turn and no piece is currently selected
+        if (piece && piece.color === this.currentTurn) {
+            this.selectPiece(row, col);
+        }
     }
 
     // Function to select a piece on the board
@@ -80,50 +94,52 @@ class ChessBoard {
         this.selectedPiece = { row, col }
 
          // Get all squares on the board to remove previous selections
-        const squares = document.querySelectorAll('.square');
+        const squares = document.querySelectorAll('.square')
 
         // Iterate through each square element to remove the 'selected' class
-        squares.forEach(square => square.classList.remove('selected'));
+        squares.forEach(square => square.classList.remove('selected'))
 
         // Find the specific square that corresponds to the currently selected pieces position
-        const selectedSquare = document.querySelector(`.square[data-row='${row}'][data-col='${col}']`);
+        const selectedSquare = document.querySelector(`.square[data-row='${row}'][data-col='${col}']`)
 
         // Add the 'selected' class to highlight the selected square
-        selectedSquare.classList.add('selected');
+        selectedSquare.classList.add('selected')
     }
 
     // Function to move a piece from its selected position to a new position
     movePiece = (row, col) => {
         // Deconstruct the selected pieces starting position
         const { row: startRow, col: startCol} = this.selectedPiece
-        const piece = this.board[startRow][startCol];
+        const piece = this.board[startRow][startCol]
 
         // Check if the move is valid for the selected piece
         if (piece.isValidMove([startRow, startCol], [row, col], this.board)) {
             // Move the selected piece to the new position on the board
             // Update the destination square with the piece
-            this.board[row][col] = this.board[startRow][startCol];
+            this.board[row][col] = this.board[startRow][startCol]
 
             // Clear the starting position to indicate the piece has moved
             // Set the original position to an empty string
-            this.board[startRow][startCol] = '';
+            this.board[startRow][startCol] = ''
 
             // Deselect the piece by setting the selectedPiece to null
             // This indicates that no piece is currently selected
-            this.selectedPiece = null;
+            this.selectedPiece = null
 
             // Re-render the chessboard to update the position of the pieces
-            this.renderBoard();
+            this.renderBoard()
 
             // Reset the event listeners
-            this.addEventListeners();
+            this.addEventListeners()
 
             // Switch the turn to the other player
-            this.currentTurn = this.currentTurn === 'white' ? 'black' : 'white';
+            this.currentTurn = this.currentTurn === 'white' ? 'black' : 'white'
+
         } else if (this.board[row][col] && this.board[row][col].color === this.currentTurn) {
-            return
+            // Select a different piece of the same color
+            this.selectPiece(row, col)
         } else {
-            alert('Invalid move!');
+            alert('Invalid move!')
         }
     }
 
@@ -137,7 +153,7 @@ class ChessBoard {
             'queen': piece.color === 'white' ? '♕' : '♛',
             'king': piece.color === 'white' ? '♔' : '♚'
         };
-        return symbols[piece.type];
+        return symbols[piece.type]
     }
 }
 
