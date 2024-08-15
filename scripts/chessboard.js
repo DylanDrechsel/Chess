@@ -103,7 +103,7 @@ class ChessBoard {
             // Move the selected piece to the new position on the board
             // Update the destination square with the piece
             this.board[row][col] = this.board[startRow][startCol];
-            console.log('HIT FROM MOVE PIECE INSIDE IF')
+
             // Clear the starting position to indicate the piece has moved
             // Set the original position to an empty string
             this.board[startRow][startCol] = '';
@@ -120,7 +120,7 @@ class ChessBoard {
 
             // Switch the turn to the other player
             this.currentTurn = this.currentTurn === 'white' ? 'black' : 'white';
-        } else if (this.board[row][col]) {
+        } else if (this.board[row][col] && this.board[row][col].color === this.currentTurn) {
             return
         } else {
             alert('Invalid move!');
