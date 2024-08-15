@@ -1,18 +1,18 @@
-import { Pawn, Rook } from './pieces.js'
+import { Pawn, Rook, Knight, Bishop, Queen, King } from './pieces.js'
 
 // Lowercase --> Black Pieces
 // Uppercase --> White Pieces
 class ChessBoard {
     constructor() {
         this.board = [
-            [new Rook('black'), 'n', 'b', 'q', 'k', 'b', 'n', new Rook('block')],
+            [new Rook('black'), new Knight('black'), new Bishop('black'), new Queen('black'), new King('black'), new Bishop('black'), new Knight('black'), new Rook('block')],
             [new Pawn('black'), new Pawn('black'), new Pawn('black'), new Pawn('black'), new Pawn('black'), new Pawn('black'), new Pawn('black'), new Pawn('black')],
             ['', '', '', '', '', '', '', ''],
             ['', '', '', '', '', '', '', ''],
             ['', '', '', '', '', '', '', ''],
             ['', '', '', '', '', '', '', ''],
             [new Pawn('white'), new Pawn('white'), new Pawn('white'), new Pawn('white'), new Pawn('white'), new Pawn('white'), new Pawn('white'), new Pawn('white')],
-            [new Rook('white'), 'N', 'B', 'Q', 'K', 'B', 'N', new Rook('white')]
+            [new Rook('white'), new Knight('white'), new Bishop('white'), new Queen('white'), new King('white'), new Bishop('white'), new Knight('white'), new Rook('white')]
         ]
         this.selectedPiece = null
         this.currentTurn = 'white'

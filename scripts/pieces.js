@@ -127,4 +127,28 @@ class Rook extends Piece {
     }
 }
 
-export { Piece, Pawn, Rook }
+class Knight extends Piece {
+    constructor(color) {
+        super(color, 'knight')
+    }
+}
+
+class Bishop extends Piece {
+    constructor(color) {
+        super(color, 'bishop')
+    }
+}
+
+class Queen extends Piece {
+    constructor(color) {
+        super(color, 'queen')
+    }
+}
+
+class King extends Piece {
+    constructor(color) {
+        super(color, 'king')
+    }
+}
+
+export { Piece, Pawn, Rook, Knight, Bishop, Queen, King }
