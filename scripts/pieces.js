@@ -9,11 +9,12 @@ class Piece {
         this.type = type
     }
 
-    isValidMove(startPos, endPos, board) {
+    isValidMove = (startPos, endPos, board) => {
         return false
     }
 }
 
+// Pawn piece with movement logic
 class Pawn extends Piece {
     constructor(color) {
         super(color, 'pawn');
@@ -23,7 +24,6 @@ class Pawn extends Piece {
         // Pawn Examle --> 
         // startPos --> [6, 0] 
         // endPos --> [5, 0]
-        console.log(startPos, endPos)
         const direction = this.color === 'white' ? -1 : 1
         
         // Starting and ending positions for rows and columns
@@ -71,9 +71,59 @@ class Pawn extends Piece {
     }
 }
 
+// Rook piece with movement logic
 class Rook extends Piece {
     constructor(color) {
         super(color, 'rook');
+    }
+
+    // Check if a rook move is valid
+    isValidMove = (startPos, endPos, board) => {
+        // Rook Examle --> 
+        // startPos --> [0, 0] 
+        // endPos --> [5, 0]
+
+        // Starting and ending positions for rows and columns
+        const startRow = startPos[0]
+        const startCol = startPos[1]
+        const endRow = endPos[0]
+        const endCol = endPos[1]
+
+        // Rook must move in a straight line, either long the same row || column
+        if (startCol !== endCol && startRow !== endRow ) {
+            return false
+        }
+
+        // Determine the direction of movement (row and column step increments)
+        // The `stepRow` variable determines how many steps to take vertically (up or down)
+        // The `stepCol` variable determines how many steps to take horizontally (left or right)
+        const stepRow = startRow === endRow ? 0 : (endRow > startRow ? 1 : -1)
+        const stepCol = startCol === endCol ? 0 : (endCol > startCol ? 1 : -1)
+
+        // Check each square between the start and end positions for other pieces
+        let currentRow = startRow + stepRow; // Initialize current row
+        let currentCol = startCol + stepCol; // Initialize current column
+
+        // Loop through each square between the starting and ending positions to check for other pieces
+        while (currentRow !== endRow || currentCol !== endCol) {
+            // Checks if the current square is occupied
+            if (board[currentRow][currentCol] !== '') {
+                // If there is a piece blocking the path, the move is invalid
+                return false
+            }
+            currentRow += stepRow
+            currentCol += stepCol
+        }
+
+        // Checks the destination square for the same color piece
+        const targetPiece = board[endRow][endCol]
+
+        // Cant jump own piece
+        if (targetPiece && targetPiece.color === this.color) {
+            return false
+        }
+
+        return true
     }
 }
 
