@@ -20,6 +20,7 @@ class Pawn extends Piece {
     }
 
     isValidMove = (startPos, endPos, board) => {
+        console.log(startPos, endPos)
         const direction = this.color === 'white' ? -1 : 1
         
         // Starting and ending positions for rows and columns

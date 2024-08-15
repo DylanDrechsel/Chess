@@ -78,6 +78,18 @@ class ChessBoard {
     selectPiece = (row, col) => {
         // Store the selected piece's position in an object
         this.selectedPiece = { row, col }
+
+         // Get all squares on the board to remove previous selections
+        const squares = document.querySelectorAll('.square');
+
+        // Iterate through each square element to remove the 'selected' class
+        squares.forEach(square => square.classList.remove('selected'));
+
+        // Find the specific square that corresponds to the currently selected pieces position
+        const selectedSquare = document.querySelector(`.square[data-row='${row}'][data-col='${col}']`);
+
+        // Add the 'selected' class to highlight the selected square
+        selectedSquare.classList.add('selected');
     }
 
     // Function to move a piece from its selected position to a new position
@@ -91,7 +103,7 @@ class ChessBoard {
             // Move the selected piece to the new position on the board
             // Update the destination square with the piece
             this.board[row][col] = this.board[startRow][startCol];
-
+            console.log('HIT FROM MOVE PIECE INSIDE IF')
             // Clear the starting position to indicate the piece has moved
             // Set the original position to an empty string
             this.board[startRow][startCol] = '';
@@ -108,6 +120,8 @@ class ChessBoard {
 
             // Switch the turn to the other player
             this.currentTurn = this.currentTurn === 'white' ? 'black' : 'white';
+        } else if (this.board[row][col]) {
+            return
         } else {
             alert('Invalid move!');
         }
