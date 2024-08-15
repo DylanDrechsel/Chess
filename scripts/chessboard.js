@@ -1,7 +1,5 @@
 import { Pawn, Rook, Knight, Bishop, Queen, King } from './pieces.js'
 
-// Lowercase --> Black Pieces
-// Uppercase --> White Pieces
 class ChessBoard {
     constructor() {
         this.board = [
