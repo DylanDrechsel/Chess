@@ -275,6 +275,30 @@ class King extends Piece {
     constructor(color) {
         super(color, 'king')
     }
+
+    isValidMove = (startPos, endPos, board) => {
+        const startRow = startPos[0]
+        const startCol = startPos[1]
+        const endRow = endPos[0]
+        const endCol = endPos[1]
+
+        // Calculate the absolute differences in rows and columns
+        const rowDiff = Math.abs(startRow - endRow)
+        const colDiff = Math.abs(startCol - endCol)
+
+        if (rowDiff <= 1 && colDiff <= 1) {
+             // Checks the destination square for the same color piece
+             const targetPiece = board[endRow][endCol]
+
+             // Cant jump own piece
+             if (!targetPiece || targetPiece.color !== this.color) {
+                 return true
+             }
+        }
+
+        // If the move doesnt match the Kings pattern it is invalid
+        return false
+    }
 }
 
 export { Piece, Pawn, Rook, Knight, Bishop, Queen, King }
