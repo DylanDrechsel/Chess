@@ -20,6 +20,9 @@ class Pawn extends Piece {
     }
 
     isValidMove = (startPos, endPos, board) => {
+        // Pawn Examle --> 
+        // startPos --> [6, 0] 
+        // endPos --> [5, 0]
         console.log(startPos, endPos)
         const direction = this.color === 'white' ? -1 : 1
         
@@ -31,12 +34,23 @@ class Pawn extends Piece {
 
         // Move Forward: Check if the pawn moves straight and the destination square is empty
         if (endCol === startCol && board[endRow][endCol] === '') {
-            // Single square move
+            // Checks if the move is exactly one square forward
             if (endRow === startRow + direction) {
+                 // White pawn's initial position (startPos) is [6, 0] and 
+                 // it moves to end position (endPos) [5, 0]
                 return true
             }
-        }
-        
+
+            // Checks for an beginning double move
+            if ((this.color === 'white' && startRow === 6) || (this.color === 'black' && startRow === 1)) {
+                // Checks to make sure the move 2 spaces forward has an empty square
+                if (endRow === startRow + 2 * direction && board[endRow - direction][endCol] === '') {
+                    // Black pawn at [1, 4] moves to [3, 4]
+                    // Black pawn's initial position [1, 4] and it moves to [3, 4]
+                    return true
+                }
+            }
+        } 
     }
 }
 

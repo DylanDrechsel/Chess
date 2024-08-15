@@ -69,6 +69,12 @@ class ChessBoard {
         // Get the piece that is located at the clicked square
         const piece = this.board[row][col]
 
+        // <__________ WORKING ON THROWING ALERT IF PLAYER SELECTS A PIECE OF THE WRONG COLOR __________>
+        // if (piece.color !== this.currentTurn) {
+        //     alert('Please select a piece that is your color')
+        //     return
+        // }
+
         // Check if the piece is currently selected
         this.selectedPiece ? this.movePiece(row, col) : null
         piece && piece.color === this.currentTurn ? this.selectPiece(row,col) : null
@@ -121,6 +127,7 @@ class ChessBoard {
             // Switch the turn to the other player
             this.currentTurn = this.currentTurn === 'white' ? 'black' : 'white';
         } else if (this.board[row][col] && this.board[row][col].color === this.currentTurn) {
+            // Allows to change selected piece without throwing the alert
             return
         } else {
             alert('Invalid move!');
