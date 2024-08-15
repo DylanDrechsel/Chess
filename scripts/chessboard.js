@@ -15,6 +15,7 @@ class ChessBoard {
             ['R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R']
         ]
         this.selectedPiece = null
+        this.currentTurn = 'white';
         this.renderBoard()
         this.addEventListeners()
     }
@@ -70,7 +71,7 @@ class ChessBoard {
 
         // Check if the piece is currently selected
         this.selectedPiece ? this.movePiece(row, col) : null
-        piece ? this.selectPiece(row,col) : null
+        piece && piece.color === this.currentTurn ? this.selectPiece(row,col) : null
     }
 
     // Function to select a piece on the board
@@ -83,22 +84,33 @@ class ChessBoard {
     movePiece = (row, col) => {
         // Deconstruct the selected pieces starting position
         const { row: startRow, col: startCol} = this.selectedPiece
+        const piece = this.board[startRow][startCol];
 
-        // Move the selected piece to the new position on the baord
-        // Place the piece at the destination (row, col)
-        this.board[row][col] = this.board[startRow][startCol]
+        // Check if the move is valid for the selected piece
+        if (piece.isValidMove([startRow, startCol], [row, col], this.board)) {
+            // Move the selected piece to the new position on the board
+            // Update the destination square with the piece
+            this.board[row][col] = this.board[startRow][startCol];
 
-        // Clear the starting position to indicate the piece has moved
-        this.board[startRow][startCol] = ''
+            // Clear the starting position to indicate the piece has moved
+            // Set the original position to an empty string
+            this.board[startRow][startCol] = '';
 
-        // Reset the selectedPiece to null, indicating no piece is currently selected
-        this.selectedPiece = null
-        
-        // Re-render the chessboard to update the position of the pieces
-        this.renderBoard()
+            // Deselect the piece by setting the selectedPiece to null
+            // This indicates that no piece is currently selected
+            this.selectedPiece = null;
 
-        // Reset the Event Listeners
-        this.addEventListeners()
+            // Re-render the chessboard to update the position of the pieces
+            this.renderBoard();
+
+            // Reset the event listeners
+            this.addEventListeners();
+
+            // Switch the turn to the other player
+            this.currentTurn = this.currentTurn === 'white' ? 'black' : 'white';
+        } else {
+            alert('Invalid move!');
+        }
     }
 
     // Get the symbol representing a piece
