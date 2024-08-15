@@ -15,6 +15,7 @@ class ChessBoard {
             ['R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R']
         ]
         this.selectedPiece = null
+        this.currentTurn = 'white';
         this.renderBoard()
         this.addEventListeners()
     }
@@ -70,35 +71,60 @@ class ChessBoard {
 
         // Check if the piece is currently selected
         this.selectedPiece ? this.movePiece(row, col) : null
-        piece ? this.selectPiece(row,col) : null
+        piece && piece.color === this.currentTurn ? this.selectPiece(row,col) : null
     }
 
     // Function to select a piece on the board
     selectPiece = (row, col) => {
         // Store the selected piece's position in an object
         this.selectedPiece = { row, col }
+
+         // Get all squares on the board to remove previous selections
+        const squares = document.querySelectorAll('.square');
+
+        // Iterate through each square element to remove the 'selected' class
+        squares.forEach(square => square.classList.remove('selected'));
+
+        // Find the specific square that corresponds to the currently selected pieces position
+        const selectedSquare = document.querySelector(`.square[data-row='${row}'][data-col='${col}']`);
+
+        // Add the 'selected' class to highlight the selected square
+        selectedSquare.classList.add('selected');
     }
 
     // Function to move a piece from its selected position to a new position
     movePiece = (row, col) => {
         // Deconstruct the selected pieces starting position
         const { row: startRow, col: startCol} = this.selectedPiece
+        const piece = this.board[startRow][startCol];
 
-        // Move the selected piece to the new position on the baord
-        // Place the piece at the destination (row, col)
-        this.board[row][col] = this.board[startRow][startCol]
+        // Check if the move is valid for the selected piece
+        if (piece.isValidMove([startRow, startCol], [row, col], this.board)) {
+            // Move the selected piece to the new position on the board
+            // Update the destination square with the piece
+            this.board[row][col] = this.board[startRow][startCol];
+            console.log('HIT FROM MOVE PIECE INSIDE IF')
+            // Clear the starting position to indicate the piece has moved
+            // Set the original position to an empty string
+            this.board[startRow][startCol] = '';
 
-        // Clear the starting position to indicate the piece has moved
-        this.board[startRow][startCol] = ''
+            // Deselect the piece by setting the selectedPiece to null
+            // This indicates that no piece is currently selected
+            this.selectedPiece = null;
 
-        // Reset the selectedPiece to null, indicating no piece is currently selected
-        this.selectedPiece = null
-        
-        // Re-render the chessboard to update the position of the pieces
-        this.renderBoard()
+            // Re-render the chessboard to update the position of the pieces
+            this.renderBoard();
 
-        // Reset the Event Listeners
-        this.addEventListeners()
+            // Reset the event listeners
+            this.addEventListeners();
+
+            // Switch the turn to the other player
+            this.currentTurn = this.currentTurn === 'white' ? 'black' : 'white';
+        } else if (this.board[row][col]) {
+            return
+        } else {
+            alert('Invalid move!');
+        }
     }
 
     // Get the symbol representing a piece
