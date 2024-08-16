@@ -141,6 +141,25 @@ class ChessBoard {
         }
     }
 
+    // Checks if the king of specified color is in check
+    isCheck = (color) => {
+        // Find the position of the King for the specified color
+        let kingPosition;
+
+        for (let row = 0; row < 8; row++) {
+            for (let col = 0; col < 8; col++) {
+                const piece = this.board[row][col]
+
+                if (piece && piece.type === 'king' && piece.color === color) {
+                    kingPosition = [row, col]
+                    break;
+                }
+            }
+
+            if (kingPosition) break;
+        }
+    }
+
     // Get the symbol representing a piece
     getPieceSymbol = (piece) => {
         const symbols = {
