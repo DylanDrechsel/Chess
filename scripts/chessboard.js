@@ -206,30 +206,105 @@ class ChessBoard {
 
     // Checks if the king of the specified color is in checkmate
     isCheckmate(color) {
-        // Checks if the king is in check
+        // First, check if the king is in check
         if (!this.isCheck(color)) {
-            return false
+            return false // If the king is not in check, it can't be checkmate
         }
     
-        // Get all possible moves for all pieces of the specified color
+        // Find the king's position on the board
+        let kingPosition
         for (let row = 0; row < 8; row++) {
             for (let col = 0; col < 8; col++) {
                 const piece = this.board[row][col]
+                if (piece && piece.type === 'king' && piece.color === color) {
+                    kingPosition = [row, col]
+                    break
+                }
+            }
+            if (kingPosition) break
+        }
     
-                if (piece && piece.color === color) {
-                    // Generate all possible moves
-                    for (let targetRow = 0; targetRow < 8; targetRow++) {
-                        for (let targetCol = 0; targetCol < 8; targetCol++) {
-                            if (piece.isValidMove([row, col], [targetRow, targetCol], this.board)) {
-                                // Create a deep copy of the board to simulate the move
+        // If no king is found, log an error and return false
+        if (!kingPosition) {
+            console.error(`No king found for color: ${color}`)
+            return false
+        }
+    
+        const [kingRow, kingCol] = kingPosition
+        const king = this.board[kingRow][kingCol]
+    
+        // Define all possible moves for the king (8 directions)
+        const possibleMoves = [
+            [-1, -1], [-1, 0], [-1, 1],
+            [0, -1],           [0, 1],
+            [1, -1],  [1, 0],  [1, 1]
+        ]
+    
+        // Check each possible move for the king
+        for (const [dx, dy] of possibleMoves) {
+            const newRow = kingRow + dx
+            const newCol = kingCol + dy
+    
+            // Check if the new position is on the board
+            if (newRow >= 0 && newRow < 8 && newCol >= 0 && newCol < 8) {
+                // Check if the move is valid for the king
+                if (king.isValidMove([kingRow, kingCol], [newRow, newCol], this.board)) {
+                    // Simulate the move on a temporary board
+                    const tempBoard = this.board.map(row => row.slice())
+                    tempBoard[newRow][newCol] = king
+                    tempBoard[kingRow][kingCol] = ''
+    
+                    // Check if this move gets the king out of check
+                    if (!this.isPositionUnderAttack([newRow, newCol], color, tempBoard)) {
+                        return false // Found a safe move, not checkmate
+                    }
+                }
+            }
+        }
+    
+        // If no safe moves for the king, check if any other piece can block or capture
+        return !this.canAnyPieceBlockOrCapture(color)
+    }
+    
+    isPositionUnderAttack(position, defendingColor, board) {
+        const [row, col] = position
+        const attackingColor = defendingColor === 'white' ? 'black' : 'white'
+    
+        // Check all squares on the board
+        for (let r = 0; r < 8; r++) {
+            for (let c = 0; c < 8; c++) {
+                const piece = board[r][c]
+                // If an opposing piece is found
+                if (piece && piece.color === attackingColor) {
+                    // Check if it can attack the given position
+                    if (piece.isValidMove([r, c], [row, col], board)) {
+                        return true // Position is under attack
+                    }
+                }
+            }
+        }
+        return false // Position is not under attack
+    }
+    
+    canAnyPieceBlockOrCapture(defendingColor) {
+        // Check all squares on the board
+        for (let row = 0; row < 8; row++) {
+            for (let col = 0; col < 8; col++) {
+                const piece = this.board[row][col]
+                // If a defending piece (not the king) is found
+                if (piece && piece.color === defendingColor && piece.type !== 'king') {
+                    // Check all possible move destinations for this piece
+                    for (let r = 0; r < 8; r++) {
+                        for (let c = 0; c < 8; c++) {
+                            if (piece.isValidMove([row, col], [r, c], this.board)) {
+                                // Simulate the move on a temporary board
                                 const tempBoard = this.board.map(row => row.slice())
-                                tempBoard[targetRow][targetCol] = piece
+                                tempBoard[r][c] = piece
                                 tempBoard[row][col] = ''
-
     
-                                // Check if the move gets the king out of check
-                                if (!this.isCheckAfterMove(color, tempBoard)) {
-                                    return false // If any move gets the king out of check, it's not checkmate
+                                // If this move gets the king out of check, it's not checkmate
+                                if (!this.isCheck(defendingColor, tempBoard)) {
+                                    return true // Found a move that blocks the check or captures the attacking piece
                                 }
                             }
                         }
@@ -237,9 +312,7 @@ class ChessBoard {
                 }
             }
         }
-    
-        // If no valid move prevents check, it's checkmate
-        return true
+        return false // No piece can block or capture to prevent checkmate
     }
     
     // Helper function to check if the king is still in check after a simulated move
