@@ -135,6 +135,7 @@ class Knight extends Piece {
         super(color, 'knight')
     }
 
+
     isValidMove = (startPos, endPos, board) => {
         const startRow = startPos[0]
         const startCol = startPos[1]
@@ -191,6 +192,11 @@ class Bishop extends Piece {
 
         // Loop through each square between the starting and ending positions to check for other pieces
         while (currentRow !== endRow || currentCol !== endCol) {
+            // Ensure we are not going out of bounds before accessing the board
+            if (currentRow < 0 || currentRow > 7 || currentCol < 0 || currentCol > 7) {
+                return false
+            }
+
             // Checks if the current square is occupied
             if (board[currentRow][currentCol] !== '') {
                 // If there is a piece blocking the path, the move is invalid
@@ -242,6 +248,10 @@ class Queen extends Piece {
 
             // Loop through each square between the starting and ending positions to check for other pieces
             while (currentRow !== endRow || currentCol !== endCol) {
+                // Ensure we are not going out of bounds before accessing the board
+                if (currentRow < 0 || currentRow > 7 || currentCol < 0 || currentCol > 7) {
+                    return false
+                }
                 // Checks if the current square is occupied
                 if (board[currentRow][currentCol] !== '') {
                     // If there is a piece blocking the path, the move is invalid

@@ -130,6 +130,19 @@ class ChessBoard {
             // Reset the event listeners
             this.addEventListeners()
 
+            // Check of the move puts the opponents King in check or checkmate
+            const opponentColor = this.currentTurn === 'white' ? 'black' : 'white'
+            if (this.isCheckmate(opponentColor)) {
+                alert(`${this.currentTurn} wins by checkmate!`)
+                this.endGame()
+                return  // Exit the function if checkmate is detected
+            }
+    
+            // Check if the opponent is in check (but not checkmate)
+            if (this.isCheck(opponentColor)) {
+                alert(`${opponentColor} is in check!`)
+            }
+
             // Switch the turn to the other player
             this.currentTurn = this.currentTurn === 'white' ? 'black' : 'white'
 
@@ -144,7 +157,7 @@ class ChessBoard {
     // Checks if the king of specified color is in check
     isCheck = (color) => {
         // Find the position of the King for the specified color
-        let kingPosition;
+        let kingPosition
 
         // Gets the Kings position for the color
         for (let row = 0; row < 8; row++) {
@@ -153,11 +166,11 @@ class ChessBoard {
 
                 if (piece && piece.type === 'king' && piece.color === color) {
                     kingPosition = [row, col]
-                    break;
+                    break
                 }
             }
 
-            if (kingPosition) break;
+            if (kingPosition) break
         }
 
         // If no king was found for the color throw error
@@ -193,8 +206,82 @@ class ChessBoard {
 
     // Checks if the king of the specified color is in checkmate
     isCheckmate(color) {
+        // Checks if the king is in check
+        if (!this.isCheck(color)) {
+            return false
+        }
+    
+        // Get all possible moves for all pieces of the specified color
+        for (let row = 0; row < 8; row++) {
+            for (let col = 0; col < 8; col++) {
+                const piece = this.board[row][col]
+    
+                if (piece && piece.color === color) {
+                    // Generate all possible moves
+                    for (let targetRow = 0; targetRow < 8; targetRow++) {
+                        for (let targetCol = 0; targetCol < 8; targetCol++) {
+                            if (piece.isValidMove([row, col], [targetRow, targetCol], this.board)) {
+                                // Create a deep copy of the board to simulate the move
+                                const tempBoard = this.board.map(row => row.slice())
+                                tempBoard[targetRow][targetCol] = piece
+                                tempBoard[row][col] = ''
 
+    
+                                // Check if the move gets the king out of check
+                                if (!this.isCheckAfterMove(color, tempBoard)) {
+                                    return false // If any move gets the king out of check, it's not checkmate
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    
+        // If no valid move prevents check, it's checkmate
+        return true
     }
+    
+    // Helper function to check if the king is still in check after a simulated move
+    isCheckAfterMove(color, board) {
+        let kingPosition
+    
+        // Find the king's position on the simulated board
+        for (let row = 0; row < 8; row++) {
+            for (let col = 0; col < 8; col++) {
+                const piece = board[row][col]
+                if (piece && piece.type === 'king' && piece.color === color) {
+                    kingPosition = [row, col]
+                    break
+                }
+            }
+    
+            if (kingPosition) break
+        }
+    
+        if (!kingPosition) {
+            console.error(`No king found for color: ${color}`)
+            return true // If there's no king, assume it's in check (shouldn't happen)
+        }
+    
+        const [kingRow, kingCol] = kingPosition
+        const opponentColor = color === 'white' ? 'black' : 'white'
+    
+        // Check if any opponent piece can move to the king's position
+        for (let row = 0; row < 8; row++) {
+            for (let col = 0; col < 8; col++) {
+                const piece = board[row][col]
+                if (piece && piece.color === opponentColor) {
+                    if (piece.isValidMove([row, col], [kingRow, kingCol], board)) {
+                        return true // The king is still in check
+                    }
+                }
+            }
+        }
+    
+        return false // The king is not in check
+    }
+    
 
     // Get the symbol representing a piece
     getPieceSymbol = (piece) => {
@@ -207,6 +294,14 @@ class ChessBoard {
             'king': piece.color === 'white' ? '♔' : '♚'
         }
         return symbols[piece.type]
+    }
+
+    // Function to end the game and disable further moves
+    endGame = () => {
+        const squares = document.querySelectorAll('.square')
+        squares.forEach(square => {
+            square.removeEventListener('click', this.handleSquareClick) // Remove event listeners
+        })
     }
 }
 
