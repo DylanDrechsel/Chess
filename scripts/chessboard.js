@@ -146,6 +146,7 @@ class ChessBoard {
         // Find the position of the King for the specified color
         let kingPosition;
 
+        // Gets the Kings position for the color
         for (let row = 0; row < 8; row++) {
             for (let col = 0; col < 8; col++) {
                 const piece = this.board[row][col]
@@ -158,6 +159,41 @@ class ChessBoard {
 
             if (kingPosition) break;
         }
+
+        // If no king was found for the color throw error
+        if (!kingPosition) {
+            console.error(`No king was found for color: ${color}`)
+            return false
+        }
+
+        // Check if any opponents piece can move to the Kings position
+        const [kingRow, kingCol] = kingPosition
+        const opponentColor = color === 'white' ? 'black' : 'white'
+
+        // Iterate over all squares on the board to find the opponents pieces
+        for (let row = 0; row < 8; row++) {
+            for (let col = 0; col < 8; col++) {
+                // Stores piece information
+                const piece = this.board[row][col]
+
+                if (piece && piece.color === opponentColor) {
+                    // If an opponents piece can move to the Kings position
+                    // The King is in check
+                    if (piece.isValidMove([row, col], [kingRow, kingCol], this.board)) {
+                        return true
+                    }
+                }
+            }
+        }
+
+        // If no opponents piece can attack the Kings potision 
+        // The King is not in check 
+        return false
+    }
+
+    // Checks if the king of the specified color is in checkmate
+    isCheckmate(color) {
+
     }
 
     // Get the symbol representing a piece
